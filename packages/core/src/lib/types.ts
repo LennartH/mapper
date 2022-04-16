@@ -23,8 +23,7 @@ export type Unpacked<T> = T extends (infer U)[]
 export type Dictionary<T> = { [key in keyof T]?: unknown };
 
 export type AnyConstructor = new (...args: any[]) => any;
-export type Constructor<T = any> = (new (...args: any[]) => T) &
-    TransformerMetadataFactory<T>;
+export type Constructor<T = any> = (new (...args: any[]) => T);
 
 export type Primitive = String | Number | Boolean;
 export type PrimitiveExtended = Primitive | Date;
@@ -45,16 +44,36 @@ export type PrimitiveConstructorReturnType<
     ? InstanceType<TType>
     : ReturnType<Extract<TType, PrimitiveConstructor>>;
 
-export interface TransformerMetadataFactory<TModel extends Dictionary<TModel>> {
-    __AUTOMAPPER_METADATA_FACTORY__?: () => [
-        propertyKey: string,
-        options: {
-            type: () => Constructor | [Constructor];
-            depth: number;
-            isGetterOnly?: boolean;
-        }
-    ][];
+export type ExtractArrayItem<T> = T extends Array<infer I> ? ExtractArrayItem<I> :
+                                  T extends object ? ReplaceArrayProperties<T> :
+                                  T;
+export type ReplaceArrayProperties<T> = {
+  [K in keyof T]-?: T[K] extends Array<infer I> ? ExtractArrayItem<I> :
+                    T[K] extends object ? ReplaceArrayProperties<T[K]> :
+                    T[K]
+};
+export type FlatteningPathSelector<T> = (source: ReplaceArrayProperties<T>) => unknown;
+
+export type MetadataOptions<TSource> = {
+    /**
+     * Depth for nested models. Default to 1
+     */
+    depth?: number;
+    /**
+     * Mark this property as getter-only?
+     */
+    isGetterOnly?: boolean;
+    /**
+     * Path to retrieve the value from the source object, if it can't be determined by the used {@link NamingConvention}.
+     */
+    flatteningPath?: string | string[] | FlatteningPathSelector<TSource>
 }
+
+export type NormalizedMetadataOptions = {
+    depth: number;
+    isGetterOnly?: boolean;
+    flatteningPath?: string[];
+};
 
 export interface ErrorHandler {
     handle(error: unknown): void;
@@ -136,13 +155,15 @@ export const enum MetadataClassId {
     metaFn,
     isArray,
     isGetterOnly,
+    flatteningPath,
 }
 
 export type Metadata = [
     propertyKeys: string[],
     metaFn: () => PrimitiveExtended | MetadataIdentifier,
     isArray: boolean,
-    isGetterOnly?: boolean
+    isGetterOnly?: NormalizedMetadataOptions['isGetterOnly'],
+    flatteningPath?: NormalizedMetadataOptions['flatteningPath'],
 ];
 
 export interface Mapper {
@@ -545,9 +566,7 @@ export type MetadataList = Array<
         metadata: {
             type: () => MetadataIdentifier;
             isArray: boolean;
-            depth: number;
-            isGetterOnly?: boolean;
-        }
+        } & NormalizedMetadataOptions,
     ]
 >;
 

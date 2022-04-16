@@ -41,8 +41,7 @@ export function classes(
                     continue;
                 }
 
-                const [metadataList, nestedConstructors] =
-                    getMetadataList(identifier);
+                const [metadataList, nestedConstructors] = getMetadataList(identifier);
                 metadataMap.set(identifier, metadataList);
                 metadataTracker.add(identifier);
 

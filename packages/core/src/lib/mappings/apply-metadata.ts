@@ -1,14 +1,5 @@
-import {
-    getMetadataMap,
-    getMetadataObjectMap,
-    getRecursiveCount,
-    getRecursiveDepth,
-} from '../symbols';
-import type {
-    ApplyMetadataFn,
-    MappingStrategy,
-    MetadataIdentifier,
-} from '../types';
+import { getMetadataMap, getMetadataObjectMap, getRecursiveCount, getRecursiveDepth } from '../symbols';
+import type { ApplyMetadataFn, MappingStrategy, MetadataIdentifier } from '../types';
 import { MetadataClassId, MetadataObjectMapClassId } from '../types';
 import { isDateConstructor } from '../utils/is-date-constructor';
 import { isEmpty } from '../utils/is-empty';
