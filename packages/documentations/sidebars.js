@@ -69,6 +69,7 @@ const sidebars = {
                         'mapping-configuration/for-member/convert-using',
                         'mapping-configuration/for-member/null-substitution',
                         'mapping-configuration/for-member/undefined-substitution',
+                        'mapping-configuration/for-member/nullish-substitution',
                         'mapping-configuration/for-member/map-with-arguments',
                         'mapping-configuration/for-member/map-defer',
                     ],

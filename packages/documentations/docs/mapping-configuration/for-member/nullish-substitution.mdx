@@ -1,0 +1,26 @@
+---
+id: nullish-substitution
+title: NullishSubstitution
+sidebar_label: NullishSubstitution
+sidebar_position: 10
+---
+
+Call `nullishSubstitution()` and pass in a raw value to map to the configured property in the case of the same property on `Source` is `undefined` or `null`. If we pass in an object, AutoMapper will map the object as-is without any consideration for nested mapping.
+
+```ts
+createMap(
+    mapper,
+    User,
+    UserDto,
+    forMember(
+        (destination) => destination.fullName,
+        nullishSubstitution('raw value')
+    )
+);
+
+mapper.map({}, User, UserDto);
+mapper.map({ fullName: null }, User, UserDto);
+// returns UserDto { fullName: 'raw value' }
+```
+
+`nullishSubstitution()` sets the `TransformationType` to `TransformationType.Substitution`
