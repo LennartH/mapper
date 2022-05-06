@@ -6,7 +6,7 @@ describe(nullishSubstitution.name, () => {
         const nullishSub = nullishSubstitution('');
         expect(nullishSub).toBeTruthy();
         expect(nullishSub[MapFnClassId.type]).toEqual(
-            TransformationType.UndefinedSubstitution
+            TransformationType.NullishSubstitution
         );
         expect(nullishSub[MapFnClassId.fn]).toBeInstanceOf(Function);
     });
