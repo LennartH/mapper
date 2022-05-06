@@ -6,6 +6,7 @@ import {
     forMember,
     nullSubstitution,
     undefinedSubstitution,
+    nullishSubstitution, Mapper
 } from '@automapper/core';
 
 describe('Map - Condition/Substitutions with Models', () => {
@@ -22,9 +23,11 @@ describe('Map - Condition/Substitutions with Models', () => {
         foo?: FooDto;
     }
 
-    const mapper = createMapper({ strategyInitializer: classes() });
-
-    createMap(mapper, Foo, FooDto);
+    let mapper: Mapper;
+    beforeEach(() => {
+        mapper = createMapper({ strategyInitializer: classes() });
+        createMap(mapper, Foo, FooDto);
+    })
 
     it('should condition respect models', () => {
         createMap(
@@ -65,6 +68,21 @@ describe('Map - Condition/Substitutions with Models', () => {
             Bar,
             BarDto,
             forMember((d) => d.foo, undefinedSubstitution(null))
+        );
+
+        const bar = new Bar();
+        bar.foo = new Foo();
+
+        const dto = mapper.map(bar, Bar, BarDto);
+        expect(dto.foo).toEqual(new FooDto());
+    });
+
+    it('should nullishSubstitution respect models', () => {
+        createMap(
+            mapper,
+            Bar,
+            BarDto,
+            forMember((d) => d.foo, nullishSubstitution(undefined))
         );
 
         const bar = new Bar();

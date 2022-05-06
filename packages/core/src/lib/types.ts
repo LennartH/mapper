@@ -261,6 +261,7 @@ export const enum TransformationType {
     UndefinedSubstitution,
     MapWithArguments,
     MapDefer,
+    NullishSubstitution,
 }
 
 export const enum MapFnClassId {
@@ -282,6 +283,7 @@ export type MemberMapReturnNoDefer<
     | ConvertUsingReturn<TSource, TDestination>
     | NullSubstitutionReturn<TSource, TDestination, TSelectorReturn>
     | UndefinedSubstitutionReturn<TSource, TDestination, TSelectorReturn>
+    | NullishSubstitutionReturn<TSource, TDestination, TSelectorReturn>
     | IgnoreReturn<TSource, TDestination, TSelectorReturn>
     | MapWithArgumentsReturn<TSource, TDestination, TSelectorReturn>;
 
@@ -376,6 +378,15 @@ export type UndefinedSubstitutionReturn<
     TSelectorReturn = SelectorReturn<TDestination>
 > = [
     TransformationType.UndefinedSubstitution,
+    (source: TSource, sourceMemberPath: string[]) => TSelectorReturn
+];
+
+export type NullishSubstitutionReturn<
+    TSource extends Dictionary<TSource>,
+    TDestination extends Dictionary<TDestination>,
+    TSelectorReturn = SelectorReturn<TDestination>
+> = [
+    TransformationType.NullishSubstitution,
     (source: TSource, sourceMemberPath: string[]) => TSelectorReturn
 ];
 

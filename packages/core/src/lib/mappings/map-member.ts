@@ -59,6 +59,7 @@ export function mapMember<
         case TransformationType.Condition:
         case TransformationType.NullSubstitution:
         case TransformationType.UndefinedSubstitution:
+        case TransformationType.NullishSubstitution:
             value = (
                 mapFn as ConditionReturn<TSource, TDestination>[MapFnClassId.fn]
             )(sourceObject, destinationMemberPath);
